@@ -34,6 +34,9 @@ RUN apt-get update \
     && make \
     && make install \
     && make clean \
+    && mkdir /etc/nginx/conf.d \
+    && mv /etc/nginx/nginx.conf /etc/nginx/conf.d/default.conf \
+    && echo "include /etc/nginx/conf.d/*.conf;" >> nginx.conf \
     && apt-get purge build-essential -y \
     && apt-get clean \
     && apt-get autoremove -y \
@@ -46,6 +49,6 @@ RUN apt-get update \
     && rm -Rf /tmp/* \
     && rm -Rf /var/lib/apt/lists/*
 
-EXPOSE 80 443
+EXPOSE 80 8080 443
 
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
