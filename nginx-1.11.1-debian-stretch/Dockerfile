@@ -36,7 +36,8 @@ RUN apt-get update \
     && make clean \
     && mkdir /etc/nginx/conf.d \
     && mv /etc/nginx/nginx.conf /etc/nginx/conf.d/default.conf \
-    && echo "include /etc/nginx/conf.d/*.conf;" >> nginx.conf \
+    && touch /etc/nginx/nginx.conf \
+    && echo "include /etc/nginx/conf.d/*.conf;" >> /etc/nginx/nginx.conf \
     && apt-get purge build-essential -y \
     && apt-get clean \
     && apt-get autoremove -y \
@@ -48,6 +49,10 @@ RUN apt-get update \
     && rm -Rf nginx-${NGINX_VERSION} \
     && rm -Rf /tmp/* \
     && rm -Rf /var/lib/apt/lists/*
+
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
 EXPOSE 80 8080 443
 
